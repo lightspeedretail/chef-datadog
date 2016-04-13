@@ -1,4 +1,6 @@
 machine:
+  environment:
+    KITCHEN_LOCAL_YAML: .kitchen.docker.yml
   services:
     - docker
 
@@ -14,8 +16,10 @@ test:
     - eval "$(/opt/chefdk/bin/chef shell-init bash)"
   override:
     - chef --version
-    - gem query -d chefspec rubocop foodcritic rake
-    - echo TODO add kitchen testing here
+    - chef gem query -d chefspec rubocop foodcritic rake kitchen-docker
+    - chef exec rake circle:
+        parallel: true
+        timeout: 900
 
 general:
   artifacts:
